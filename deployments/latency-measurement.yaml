@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: measurement-pod
+  labels:
+    app: measurement-pod
+spec:
+  selector:
+    matchLabels:
+      app: measurement-pod
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: measurement-pod
+    spec:
+      nodeName : hyperion #You can delete this or add the name of the node that you want to deploy the measurement-pod.
+      containers:
+      - name: measurement-pod
+        image: docker.io/library/measurement-v3 #Change with the image you built.
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8081
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi

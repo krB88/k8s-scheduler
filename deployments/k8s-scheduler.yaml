@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-scheduler
+  labels:
+    app: k8s-scheduler
+spec:
+  selector:
+    matchLabels:
+      app: k8s-scheduler
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: k8s-scheduler
+    spec:
+      nodeName: typhon
+      containers:
+      - name:  scheduler-pod
+        image: docker.io/library/k8s-scheduler-v3 #Change with the image you built.
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 5000
+        resources:
+          requests:
+            cpu: 200m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-scheduler-app-service
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 6000
+    targetPort: 5000
+  selector:
+    app: k8s-scheduler

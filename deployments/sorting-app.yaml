@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sorting
+  labels:
+    app: sorting
+spec:
+  selector:
+    matchLabels:
+      app: sorting
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: sorting
+    spec:
+      containers:
+      - name: sorting
+        image: docker.io/library/sorting #Change with your application's image
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8081
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sorting
+  annotations:
+    complexity: "n*log10(n)" #Change with the time complexity of the code that you deploy.
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 8081
+    targetPort: 8081
+  selector:
+    app: sorting
